@@ -8,3 +8,4 @@ function Normalize(velX, velY)
         return velX / length, velY / length
     end
 end
+
