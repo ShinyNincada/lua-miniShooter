@@ -5,7 +5,6 @@ wf = require 'Libs.windfield.windfield.init'
 
 function love.load()
     world = wf.newWorld()
-    player = 
     loadbullet()
     player = {
         x = 400,
