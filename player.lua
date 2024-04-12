@@ -1,36 +1,38 @@
 local cursor_idle = love.mouse.newCursor('sprites/crosshair013.png', 0, 0)
 local cursor_attack = love.mouse.newCursor('sprites/crosshair015.png', 0, 0)
-local angle = 0
+angle = 0
 local shootCooldown = 0.01
-
-function loadbullet()
-    bullets = {}
-    bulletSpeed = 1000
-end
-
--- Function to convert degrees to radians
-function degToRad(degrees)
-    return degrees * math.pi / 180
-end
-
-function createBullet(z)
-    local startX = player.x + 48 * math.cos(z) - 0
-    local startY = player.y + 48 * math.sin(z) + 0
-    local bulletDy = bulletSpeed * math.sin(z);
-    local bulletDx = bulletSpeed * math.cos(z);
-
-    table.insert(bullets, {x = startX, y = startY, dx = bulletDx, dy = bulletDy})
-end
-
-function updateBullet(dt)
-    for i = 1, #bullets do 
-        bullets[i].x = bullets[i].x + bullets[i].dx * dt
-        bullets[i].y = bullets[i].y + bullets[i].dy * dt
-    end
-end
-
+local normalizedX, normalizedY
 local currentTime = os.time()
 local lastShootTime = os.time()
+Ray = {
+    hitlist = {}
+}
+
+local function GetMovementNormalized()
+    velX, velY = 0 , 0;
+
+    if love.keyboard.isDown('right', 'd') then
+        velX = 1
+    end
+
+    if love.keyboard.isDown("left", 'a') then
+        velX = -1
+    end
+
+    if love.keyboard.isDown('up', 'w') then
+        velY = -1
+    end
+
+    if love.keyboard.isDown('down', 's') then
+        velY = 1
+    end
+
+    normalizedX, normalizedY = Normalize(velX, velY)
+    return normalizedX, normalizedY
+end
+
+
 function shootHandle()
     if(love.mouse.isDown(1)) then
         love.mouse.setCursor(cursor_attack)
@@ -57,45 +59,34 @@ function shootHandle()
     end
 end
 
-function moveHandle()
-    velX, velY = 0 , 0;
-
-    if love.keyboard.isDown('right', 'd') then
-        velX = 1
-    end
-
-    if love.keyboard.isDown("left", 'a') then
-        velX = -1
-    end
-
-    if love.keyboard.isDown('up', 'w') then
-        velY = -1 
-    end
-
-    if love.keyboard.isDown('down', 's') then
-        velY = 1
-    end
-
+local function ChangeWeapon()
     if love.keyboard.isDown('1') then
-        player.weaponId = 'handgun'     
+        player.weaponId = 'handgun'   
+        player.bulletType = "circle"  
     end
 
     if love.keyboard.isDown('2') then
         player.weaponId = 'minigun'     
+        player.bulletType = "rect"  
     end
-    
-    local normalizedX, normalizedY = Normalize(velX, velY)
-    player.x = player.x + normalizedX * player.speed;
-    player.y = player.y + normalizedY * player.speed;
-    
+end
+
+function worldRayCastCallback(fixture, x, y, xn, yn, fraction)
+	local hit = {}
+	hit.fixture = fixture
+	hit.x, hit.y = x, y
+	hit.xn, hit.yn = xn, yn
+	hit.fraction = fraction
+
+	table.insert(Ray.hitList, hit)
+
+	return 1 -- Continues with ray cast through all shapes.
+end
+
+function moveHandle()
+    GetMovementNormalized()
+    ChangeWeapon()
+    player.collider:setLinearVelocity(normalizedX * player.speed, normalizedY * player.speed)
     shootHandle()
 end
 
-
-function drawBullets()
-   for i = 1, #bullets  do
-        love.graphics.setColor(0, 255, 0)
-        love.graphics.circle("fill", bullets[i].x, bullets[i].y, 1)
-        love.graphics.setColor(1,1,1)
-    end
-end

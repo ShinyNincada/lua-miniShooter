@@ -2,25 +2,28 @@ require("movement")
 require("player")
 anim8 = require("Libs.anim8")
 wf = require 'Libs.windfield.windfield.init'
+require('bullets.bullet_base')
+require('Enemy/enemy_base')
 
 function love.load()
+    
     world = wf.newWorld()
     loadbullet()
     player = {
         x = 400,
         y = 200,
         z = 0,
-        speed = 1,
+        speed = 300,
         weaponId = "minigun",
+        bulletType = "circle",
         animations = {},
-
-        -- Collider
+        interactRange = {}
     }
     
-    player.collider = world:newCircleCollider(player.x, player.y, 16)
-    box = world:newRectangleCollider(400 - 50/2, 0, 50, 50)
-    box:setRestitution(0.8)
-    box:applyAngularImpulse(5000)
+    -- Collider
+    player.collider = world:newCircleCollider(player.x, player.y, 8)
+    player.collider:setFixedRotation(true)
+    
     love.mouse.setCursor(cursor)
     player.spriteSheet = love.graphics.newImage('sprites/SpritesheetGuns.png')
     player.grid = anim8.newGrid(48, 48, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
@@ -35,6 +38,10 @@ function love.load()
 
   
     player.currentAnim = player.animations.attack_handgun
+    player.collider:setX(player.x + 16 * math.cos(angle))
+    player.collider:setY(player.y + 16 * math.sin(angle))
+
+    CreateEnemy()
 end
 
 local function animatorHandle(dt)
@@ -42,16 +49,18 @@ local function animatorHandle(dt)
 end
 
 function love.update(dt)
-    player.collider.x = player.x
-    player.collider.y = player.y
+    player.x = player.collider:getX() - 16 * math.cos(angle)
+    player.y = player.collider:getY() - 16 * math.sin(angle)
     moveHandle()
     animatorHandle(dt)
     updateBullet(dt)
+    UpdateEnemies(dt)
     world:update(dt)
 end
 
 function love.draw()
     player.currentAnim:draw(player.spriteSheet, player.x, player.y, player.z, 1, 1, 10, 24)
-    drawBullets()
+    DrawBullets()
+    DrawEnemies()
     world:draw()
 end
