@@ -1,27 +1,37 @@
-require("movement")
-require("Player")
-anim8 = require("Libs.anim8")
-wf = require 'Libs.windfield.windfield.init'
-require('bullets.bullet_base')
-require('Enemy/enemy_base')
-require 'update'
-
 function love.load() 
-    -- Create new World for physic
-    World = wf.newWorld()
+    require('startup.gameStart')
+    GameStart()
+  
     Bullets:load()
     -- Collider
     Player:load()
     CreateEnemy()
+    
+    walls = {}
+
+    if(gamemap.layers['Walls']) then
+        for i, obj in pairs(gamemap.layers['Walls'].objects) do
+            -- -- table.insert()
+            local wall = World:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            wall:setCollisionClass('Wall')
+            wall:setType('static')
+            table.insert(walls, wall)
+        end
+    end
 end
 
 function love.update(dt)
     UpdateAll(dt)
+
+    MainCamera:lookAt(Player.x, Player.y)
 end
 
 function love.draw()
-    Player:draw()
-    Bullets:draw()
-    Enemies:draw()
-    World:draw()
-end
+    MainCamera:attach()
+        gamemap:drawLayer(gamemap.layers['Tile Layer 1'])
+        Player:draw()
+        World:draw()
+        Bullets:draw()
+        Enemies:draw()
+    MainCamera:detach()
+ end

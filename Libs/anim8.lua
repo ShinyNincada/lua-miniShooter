@@ -1,7 +1,7 @@
-local anim8 = {
-  _VERSION     = 'anim8 v2.3.1',
+local Anim8 = {
+  _VERSION     = 'Anim8 v2.3.1',
   _DESCRIPTION = 'An animation library for LÖVE',
-  _URL         = 'https://github.com/kikito/anim8',
+  _URL         = 'https://github.com/kikito/Anim8',
   _LICENSE     = [[
     MIT LICENSE
 
@@ -296,7 +296,7 @@ end
 
 -----------------------------------------------------------
 
-anim8.newGrid       = newGrid
-anim8.newAnimation  = newAnimation
+Anim8.newGrid       = newGrid
+Anim8.newAnimation  = newAnimation
 
-return anim8
+return Anim8
