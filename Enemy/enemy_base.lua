@@ -2,7 +2,7 @@
 --     SLIME = "SLIME",
 -- }
 
-Enemy = {}
+local Enemy = {}
 Enemy.__index = Enemy
 
 Enemies = {}
@@ -16,6 +16,8 @@ function Enemy:create(x, y, dx, dy)
     enemy.dx = dx
     enemy.dy = dy
     enemy.radius = 10
+
+    table.insert(Enemies, enemy)
     return enemy
 end
 
@@ -40,17 +42,17 @@ function Enemy:draw()
 end
 
 function CreateEnemy()
-    table.insert(Enemies, Enemy:create(player.x, player.y, 200, 200))
+    Enemy:create(Player.x, Player.y, 200, 200)
 end
 
-function UpdateEnemies(dt)
-    for i = 1, #Enemies do 
-        Enemies[i]:update(dt)
+function Enemies:update(dt)
+    for i = 1, #self do 
+        self[i]:update(dt)
     end
 end
 
-function DrawEnemies()
-    for i = 1, #Enemies  do
-        Enemies[i]:draw()
+function Enemies:draw()
+    for i = 1, #self  do
+        self[i]:draw()
     end
 end

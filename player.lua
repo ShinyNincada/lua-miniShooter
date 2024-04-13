@@ -5,6 +5,18 @@ local shootCooldown = 0.01
 local normalizedX, normalizedY
 local currentTime = os.time()
 local lastShootTime = os.time()
+
+Player = {
+    x = 400,
+    y = 200,
+    z = 0,
+    speed = 300,
+    weaponId = "minigun",
+    bulletType = "circle",
+    animations = {},
+    interactRange = {}
+}
+
 Ray = {
     hitlist = {}
 }
@@ -38,40 +50,40 @@ function shootHandle()
         love.mouse.setCursor(cursor_attack)
         local mouseX, mouseY = love.mouse.getPosition()
 
-        -- Calculate direction from player to mouse position
-        local dx = mouseX - player.x
-        local dy = mouseY - player.y
+        -- Calculate direction from Player to mouse position
+        local dx = mouseX - Player.x
+        local dy = mouseY - Player.y
     
         -- Calculate angle in radians
         angle = math.atan2(dy, dx)
     
-        -- Update player rotation angle
-        player.z = angle
+        -- Update Player rotation angle
+        Player.z = angle
         -- Your other update code here
 
-        player.currentAnim = player.animations["attack_" .. player.weaponId]
+        Player.currentAnim = Player.animations["attack_" .. Player.weaponId]
         
-        createBullet(player.z)  
+        createBullet(Player.z)  
 
     else 
         love.mouse.setCursor(cursor_idle)
-        player.currentAnim = player.animations["idle_" .. player.weaponId]
+        Player.currentAnim = Player.animations["idle_" .. Player.weaponId]
     end
 end
 
 local function ChangeWeapon()
     if love.keyboard.isDown('1') then
-        player.weaponId = 'handgun'   
-        player.bulletType = "circle"  
+        Player.weaponId = 'handgun'   
+        Player.bulletType = "circle"  
     end
 
     if love.keyboard.isDown('2') then
-        player.weaponId = 'minigun'     
-        player.bulletType = "rect"  
+        Player.weaponId = 'minigun'     
+        Player.bulletType = "rect"  
     end
 end
 
-function worldRayCastCallback(fixture, x, y, xn, yn, fraction)
+function WorldRayCastCallback(fixture, x, y, xn, yn, fraction)
 	local hit = {}
 	hit.fixture = fixture
 	hit.x, hit.y = x, y
@@ -86,7 +98,40 @@ end
 function moveHandle()
     GetMovementNormalized()
     ChangeWeapon()
-    player.collider:setLinearVelocity(normalizedX * player.speed, normalizedY * player.speed)
+    Player.collider:setLinearVelocity(normalizedX * Player.speed, normalizedY * Player.speed)
     shootHandle()
 end
 
+function Player:load()
+    Player.collider = World:newCircleCollider(Player.x, Player.y, 8)
+    Player.collider:setFixedRotation(true)
+    
+    love.mouse.setCursor(cursor)
+    Player.spriteSheet = love.graphics.newImage('sprites/SpritesheetGuns.png')
+    Player.grid = anim8.newGrid(48, 48, Player.spriteSheet:getWidth(), Player.spriteSheet:getHeight())
+    if Player.grid then
+        Player.animations.idle_handgun = anim8.newAnimation(Player.grid(1, 1), 10)
+        Player.animations.idle_minigun = anim8.newAnimation(Player.grid(1, 2), 10)
+        Player.animations.attack_handgun = anim8.newAnimation(Player.grid('1-2', 1), 0.1)
+        Player.animations.attack_minigun = anim8.newAnimation(Player.grid('1-2', 2), 0.1)
+    else
+        love.graphics.printf("Error: Player.grid is nil")
+    end
+
+  
+    Player.currentAnim = Player.animations.attack_handgun
+    Player.collider:setX(Player.x + 16 * math.cos(angle))
+    Player.collider:setY(Player.y + 16 * math.sin(angle))
+end
+
+function Player:update(dt)
+    Player.x = Player.collider:getX() - 16 * math.cos(angle)
+    Player.y = Player.collider:getY() - 16 * math.sin(angle)
+    moveHandle()
+    Player.currentAnim:update(dt)
+
+end
+
+function Player:draw()
+    Player.currentAnim:draw(Player.spriteSheet, Player.x, Player.y, Player.z, 1, 1, 10, 24)
+end
