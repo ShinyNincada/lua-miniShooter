@@ -5,6 +5,7 @@ wf = require 'Libs.windfield.windfield.init'
 require('bullets.bullet_base')
 require('Enemy/enemy_base')
 require 'update'
+
 function love.load() 
     -- Create new World for physic
     World = wf.newWorld()
