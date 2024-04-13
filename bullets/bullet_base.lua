@@ -5,12 +5,12 @@ local BulletTypes = {
 }
 
 
-Bullet = {}
+local Bullet = {}
 Bullet.__index = Bullet
 
-function loadbullet()
-    bullets = {}
-    bulletSpeed = 20
+Bullets = {}
+function Bullets:load()
+    Bullets.BulletSpeed = 20
 end
 
 function Bullet:create(x, y, dx, dy, bulletType)
@@ -35,19 +35,8 @@ function Bullet:create(x, y, dx, dy, bulletType)
     elseif bullet.type == BulletTypes.NONE then
         
     end
-
+    table.insert(Bullets, bullet)
     return bullet
-end
-
-
-function createBullet(shootAngle)
-    local shootingOffsetX = 48 * math.cos(shootAngle)
-    local shootingOffsetY = 48 * math.sin(shootAngle)
-    local startX = player.x + shootingOffsetX
-    local startY = player.y + shootingOffsetY
-    local bulletDy = bulletSpeed * math.sin(shootAngle)
-    local bulletDx = bulletSpeed * math.cos(shootAngle)
-    table.insert(bullets, Bullet:create(startX, startY, bulletDx, bulletDy, player.bulletType))
 end
 
 
@@ -67,15 +56,27 @@ function Bullet:draw()
     love.graphics.setColor(1,1,1)
 end
 
+function createBullet(shootAngle)
+    local shootingOffsetX = 48 * math.cos(shootAngle)
+    local shootingOffsetY = 48 * math.sin(shootAngle)
+    local startX = Player.x + shootingOffsetX
+    local startY = Player.y + shootingOffsetY
+    local bulletDy = Bullets.BulletSpeed * math.sin(shootAngle)
+    local bulletDx = Bullets.BulletSpeed * math.cos(shootAngle)
+   
+    Bullet:create(startX, startY, bulletDx, bulletDy, Player.bulletType)
+end
 
-function updateBullet(dt)
-    for i = 1, #bullets do 
-        bullets[i]:update(dt)
+
+
+function Bullets:update(dt)
+    for i = 1, #self do 
+        self[i]:update(dt)
     end
 end
 
-function DrawBullets()
-    for i = 1, #bullets  do
-        bullets[i]:draw()
+function Bullets:draw()
+    for i = 1, #self  do
+        self[i]:draw()
      end
  end
