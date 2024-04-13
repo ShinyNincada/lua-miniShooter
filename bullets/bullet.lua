@@ -1,3 +1,5 @@
+Bullets = {}
+
 local BulletTypes = {
     CIRCLE = "circle",
     RECTANGLE = "rect",
@@ -8,7 +10,6 @@ local BulletTypes = {
 local Bullet = {}
 Bullet.__index = Bullet
 
-Bullets = {}
 function Bullets:load()
     Bullets.BulletSpeed = 20
 end
@@ -25,6 +26,8 @@ function Bullet:create(x, y, dx, dy, bulletType)
     bullet.radius = 5
     bullet.width = 10
     bullet.height = 10
+    bullet.timer = 5
+    bullet.dead = false
 
     -- Customize properties based on bullet type
     if bullet.type == BulletTypes.CIRCLE then
@@ -41,6 +44,11 @@ end
 
 
 function Bullet:update(dt)
+    self.timer = self.timer - dt
+    if self.timer < 0 then
+        self.dead = true
+    end
+
     self.x = self.x + self.dx * dt
     self.y = self.y + self.dy * dt
 end
@@ -54,6 +62,12 @@ function Bullet:draw()
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     end
     love.graphics.setColor(1,1,1)
+
+    -- Query for walls
+    local hitWalls = World:queryCircleArea(self.x, self.y, self.radius, {'Wall'})
+    if #hitWalls > 0 then
+        self.dead = true
+    end
 end
 
 function createBullet(shootAngle)
@@ -67,11 +81,17 @@ function createBullet(shootAngle)
     Bullet:create(startX, startY, bulletDx, bulletDy, Player.bulletType)
 end
 
-
-
 function Bullets:update(dt)
-    for i = 1, #self do 
-        self[i]:update(dt)
+    for _, b in ipairs(Bullets) do
+        b:update(dt)
+    end
+
+    local i = #self
+    while(i > 0) do
+        if self[i].dead then
+            table.remove(self, i)
+        end
+        i = i - 1
     end
 end
 

@@ -1,12 +1,7 @@
--- local const BulletTypes = {
---     SLIME = "SLIME",
--- }
-
 local Enemy = {}
 Enemy.__index = Enemy
 
 Enemies = {}
-
 
 function Enemy:create(x, y, dx, dy)
     local enemy = {}

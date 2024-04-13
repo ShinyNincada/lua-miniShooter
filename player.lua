@@ -6,6 +6,17 @@ local normalizedX, normalizedY
 local currentTime = os.time()
 local lastShootTime = os.time()
 
+function Normalize(velX, velY)
+    local length = math.sqrt(velX^2 + velY^2)
+
+    if length == 0 then
+        return 0, 0
+    else
+        return velX / length, velY / length
+    end
+end
+
+
 Player = {
     x = 400,
     y = 200,
@@ -44,12 +55,10 @@ local function GetMovementNormalized()
     return normalizedX, normalizedY
 end
 
-
 function shootHandle()
     if(love.mouse.isDown(1)) then
         love.mouse.setCursor(cursor_attack)
-        local mouseX, mouseY = love.mouse.getPosition()
-
+        local mouseX, mouseY = MainCamera:mousePosition()    
         -- Calculate direction from Player to mouse position
         local dx = mouseX - Player.x
         local dy = mouseY - Player.y
@@ -108,12 +117,12 @@ function Player:load()
     
     love.mouse.setCursor(cursor)
     Player.spriteSheet = love.graphics.newImage('sprites/SpritesheetGuns.png')
-    Player.grid = anim8.newGrid(48, 48, Player.spriteSheet:getWidth(), Player.spriteSheet:getHeight())
+    Player.grid = Anim8.newGrid(48, 48, Player.spriteSheet:getWidth(), Player.spriteSheet:getHeight())
     if Player.grid then
-        Player.animations.idle_handgun = anim8.newAnimation(Player.grid(1, 1), 10)
-        Player.animations.idle_minigun = anim8.newAnimation(Player.grid(1, 2), 10)
-        Player.animations.attack_handgun = anim8.newAnimation(Player.grid('1-2', 1), 0.1)
-        Player.animations.attack_minigun = anim8.newAnimation(Player.grid('1-2', 2), 0.1)
+        Player.animations.idle_handgun = Anim8.newAnimation(Player.grid(1, 1), 10)
+        Player.animations.idle_minigun = Anim8.newAnimation(Player.grid(1, 2), 10)
+        Player.animations.attack_handgun = Anim8.newAnimation(Player.grid('1-2', 1), 0.1)
+        Player.animations.attack_minigun = Anim8.newAnimation(Player.grid('1-2', 2), 0.1)
     else
         love.graphics.printf("Error: Player.grid is nil")
     end
