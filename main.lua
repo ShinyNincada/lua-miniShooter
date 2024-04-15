@@ -9,8 +9,8 @@ function love.load()
     
     walls = {}
 
-    if(gamemap.layers['Walls']) then
-        for i, obj in pairs(gamemap.layers['Walls'].objects) do
+    if(GameMap.layers['Walls']) then
+        for i, obj in pairs(GameMap.layers['Walls'].objects) do
             -- -- table.insert()
             local wall = World:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
             wall:setCollisionClass('Wall')
@@ -18,20 +18,27 @@ function love.load()
             table.insert(walls, wall)
         end
     end
+    Logtest = "1"
 end
 
 function love.update(dt)
     UpdateAll(dt)
-
     MainCamera:lookAt(Player.x, Player.y)
+
+
 end
 
 function love.draw()
     MainCamera:attach()
-        gamemap:drawLayer(gamemap.layers['Tile Layer 1'])
+        GameMap:drawLayer(GameMap.layers['Tile Layer 1'])
         Player:draw()
         World:draw()
         Bullets:draw()
         Enemies:draw()
+        Particles:draw()
+
+        local debugTextX = 10  -- Adjust these values as needed
+        local debugTextY = 10   -- Adjust these values as needed
+        love.graphics.print(Logtest, debugTextX, debugTextY)
     MainCamera:detach()
  end

@@ -72,7 +72,7 @@ function shootHandle()
 
         Player.currentAnim = Player.animations["attack_" .. Player.weaponId]
         
-        createBullet(Player.z)  
+        Bullets:createBullet(Player.z)  
 
     else 
         love.mouse.setCursor(cursor_idle)
@@ -84,6 +84,8 @@ local function ChangeWeapon()
     if love.keyboard.isDown('1') then
         Player.weaponId = 'handgun'   
         Player.bulletType = "circle"  
+        -- Bullets:createBullet(angle)
+        -- Particles:CreateRed(Player.x, Player.y, 0, 0)
     end
 
     if love.keyboard.isDown('2') then

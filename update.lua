@@ -8,6 +8,9 @@ function UpdateAll(dt)
     -- Bullets projectiles update
     Bullets:update(dt)
 
+    -- Particles update
+    Particles:update(dt)
+    
     -- Enemies update
     Enemies:update(dt)
 end
