@@ -1,7 +1,7 @@
 local BulletTypes = {
-    CIRCLE = "circle",
-    RECTANGLE = "rect",
-    NONE = "none"
+    CIRCLE = require 'src.bullets.handgun_bullet'
+    -- RECTANGLE = "rect",
+    -- NONE = "none"
 }
 
 
@@ -21,7 +21,9 @@ function Bullets:createBullet(shootAngle)
     local bulletDy = Bullets.BulletSpeed * math.sin(shootAngle)
     local bulletDx = Bullets.BulletSpeed * math.cos(shootAngle)
    
-    Bullet:create(startX, startY, bulletDx, bulletDy, Player.bulletType)
+    local spawned = BulletTypes['CIRCLE'](startX, startY, bulletDx, bulletDy, Player.bulletType)
+    
+    table.insert(Bullets, spawned)
 end
 
 function Bullets:update(dt)

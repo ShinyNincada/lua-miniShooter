@@ -9,6 +9,10 @@ function RequireAll()
     Sti = require 'Libs.sti'
     GameMap = Sti('sprites/mapTiles/cityTest.lua')
     
+    -- Create new World for physic
+    wf = require 'Libs.windfield.init'
+    World = wf.newWorld()
+    
     require("player")
     Tick = require('Libs.tick.tick')
 
@@ -17,9 +21,6 @@ function RequireAll()
     require('src.enemies.enemy')
     require 'update' 
     
-    -- Create new World for physic
-    wf = require 'Libs.windfield.init'
-    World = wf.newWorld()
 
     -- Creat classes for different collision
     require 'startup.collisionClasses'   

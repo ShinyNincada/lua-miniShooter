@@ -1,7 +1,7 @@
 local Bullet = {}
 Bullet.__index = Bullet
 
-function Bullet:create(x, y, dx, dy, bulletType)
+function HandgunBulletInit(x, y, dx, dy, bulletType)
     local bullet = {}
     setmetatable(bullet, Bullet)
 
@@ -16,14 +16,12 @@ function Bullet:create(x, y, dx, dy, bulletType)
     bullet.timer = 5
     bullet.dead = false
 
-    table.insert(Bullets, bullet)
+    function bullet:explode()
+        Particles:CreateRed(self.x, self.y, 0, 0)
+    end
+
     return bullet
 end
-
-function Bullet:explode()
-    Particles:CreateRed(self.x, self.y, 0, 0)
-end
-
 
 function Bullet:update(dt)
     self.timer = self.timer - dt
@@ -47,6 +45,17 @@ function Bullet:draw()
         self:explode()
         self.dead = true
     end
+
+     -- Query for enemies
+     local hitEnemies = World:queryCircleArea(self.x, self.y, self.radius, {'Enemy'})
+     for _,e in ipairs(hitEnemies) do
+         e.parent:hit()
+     end
+     
+     if #hitEnemies > 0 then 
+        self:explode()
+        self.dead = true 
+    end
 end
 
-return Bullet
+return HandgunBulletInit

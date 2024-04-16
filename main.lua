@@ -5,8 +5,8 @@ function love.load()
     Bullets:load()
     -- Collider
     Player:load()
-    CreateEnemy()
-    
+    CreateEnemy(0, 0, 'SPIDER', nil)
+
     
     walls = {}
 
