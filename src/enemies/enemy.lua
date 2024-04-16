@@ -25,6 +25,10 @@ function CreateEnemy(startX, startY, type, args)
 
     function spawned:hit() 
         self.health = self.health - 1
+        if(self.health <= 0) then
+            self.health = 0
+        end
+        self.flashTimer = 0.175
     end
 
     function spawned:moveLogic(dt)
@@ -37,15 +41,44 @@ function CreateEnemy(startX, startY, type, args)
         if(self.flashTimer > 0) then
             self.flashTimer = self.flashTimer - dt
         end 
+
+        spawned:moveLogic(dt)
     end
 
     table.insert(Enemies, spawned)
 end
 
-function Enemies:update(dt)
-    for i = 1, #self do 
-        self[i]:update(dt)
+function Enemies:destroyDead()
+    local i = #Enemies
+    while i > 0 do
+        if Enemies[i].dead then
+            if Enemies[i].physics then
+                Enemies[i].physics:destroy()
+            end
+            table.remove(Enemies, i)
+        end
+        i = i - 1
     end
+end
+
+function Enemies:update(dt)
+    for i,e in ipairs(self) do
+        e:update(dt)
+        e:genericUpdate(dt)
+    end
+
+    -- Iterate through all enemies in reverse to remove the dead ones
+    for i=#Enemies,1,-1 do
+        if Enemies[i].dead then
+            if Enemies[i].physics ~= nil then
+                Enemies[i].physics:destroy()
+            end
+            Logtest = "testtt"
+
+            table.remove(Enemies, i)
+        end
+    end
+  
 end
 
 function Enemies:draw()

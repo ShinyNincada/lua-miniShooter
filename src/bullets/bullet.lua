@@ -31,13 +31,11 @@ function Bullets:update(dt)
         b:update(dt)
     end
 
-    local i = #self
-    while(i > 0) do
-        if self[i].dead then
-            table.remove(self, i)
-        end
-        i = i - 1
+   for i=#self,1,-1 do
+    if self[i].dead then
+        table.remove(self, i)
     end
+end
 end
 
 function Bullets:draw()

@@ -16,6 +16,7 @@ function RequireAll()
     require("player")
     Tick = require('Libs.tick.tick')
 
+    require('src.ultils.shaders')
     require('src.bullets.bullet')
     require('src.particles.particles')
     require('src.enemies.enemy')

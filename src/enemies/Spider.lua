@@ -21,7 +21,7 @@ function SpiderInit(x, y)
     spiderSpawn.currentAnim = spiderSpawn.animations.idle
 
     -- Physics setup
-    spiderSpawn.physics = World:newCircleCollider(x, y, 8)
+    spiderSpawn.physics = World:newBSGRectangleCollider(x, y, 16,16,3)
     spiderSpawn.physics:setCollisionClass('Enemy')
     spiderSpawn.physics:setFixedRotation(true)
     spiderSpawn.physics:setType("kinematic")
