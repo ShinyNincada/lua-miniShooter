@@ -7,6 +7,7 @@ function love.load()
     Player:load()
     CreateEnemy()
     
+    
     walls = {}
 
     if(GameMap.layers['Walls']) then
@@ -18,14 +19,11 @@ function love.load()
             table.insert(walls, wall)
         end
     end
-    Logtest = "1"
 end
 
 function love.update(dt)
     UpdateAll(dt)
     MainCamera:lookAt(Player.x, Player.y)
-
-
 end
 
 function love.draw()
@@ -39,6 +37,6 @@ function love.draw()
 
         local debugTextX = 10  -- Adjust these values as needed
         local debugTextY = 10   -- Adjust these values as needed
-        love.graphics.print(Logtest, debugTextX, debugTextY)
+        love.graphics.print(love.timer.getFPS(), debugTextX, debugTextY)
     MainCamera:detach()
  end

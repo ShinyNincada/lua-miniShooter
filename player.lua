@@ -140,7 +140,6 @@ function Player:update(dt)
     Player.y = Player.collider:getY() - 16 * math.sin(angle)
     moveHandle()
     Player.currentAnim:update(dt)
-
 end
 
 function Player:draw()

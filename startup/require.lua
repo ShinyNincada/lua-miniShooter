@@ -9,10 +9,12 @@ function RequireAll()
     Sti = require 'Libs.sti'
     GameMap = Sti('sprites/mapTiles/cityTest.lua')
     
+    require("player")
+    Tick = require('Libs.tick.tick')
+
     require('src.bullets.bullet')
     require('src.particles.particles')
-    require("player")
-    require('Enemy/enemy_base')
+    require('src.enemies.enemy')
     require 'update' 
     
     -- Create new World for physic

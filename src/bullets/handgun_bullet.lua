@@ -29,6 +29,7 @@ function Bullet:update(dt)
     self.timer = self.timer - dt
     if self.timer < 0 then
         self.dead = true
+        self:explode()
     end
 
     self.x = self.x + self.dx * dt
