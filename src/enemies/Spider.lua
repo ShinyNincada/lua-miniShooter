@@ -8,7 +8,7 @@ function SpiderInit(x, y)
     setmetatable(spiderSpawn, Spider)
 
     -- Stats
-    spiderSpawn.health = 5
+    spiderSpawn.health = 100
     spiderSpawn.dead = false
     
     -- Animations setup
@@ -29,20 +29,24 @@ function SpiderInit(x, y)
 
     -- Ultils stats
     spiderSpawn.flashTimer = 0
-
+    spiderSpawn.floatMax = 1.5
+    spiderSpawn.floatTime = 0.9
+    spiderSpawn.scaleX = 1
+    
     return spiderSpawn
 end
 
 function Spider:update(dt) 
     self.currentAnim:update(dt)
+    self:setScaleX()
 end
 
 function Spider:draw()
     local ex, ey = self.physics:getPosition()
+    self.currentAnim:draw(self.spriteSheet, ex, ey, nil, self.scaleX, 1, 8, 8)
     love.graphics.setColor(1, 0, 0)
-    self.currentAnim:draw(self.spriteSheet, ex, ey, 0, 1, 1, 8, 8)
+    love.graphics.rectangle("fill", ex - 25, ey - 24, 50 * (self.health / 100 ), 10)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.rectangle("fill", ex - 12, ey - 24, 5 * self.health, 10)
 end
 
 return SpiderInit

@@ -1,6 +1,7 @@
 function RequireAll()
     --Import camera
     Camera = require 'Libs.hump.camera'
+    Vector = require "Libs.hump.vector"
     MainCamera = Camera()
 
     -- Import Anim8
@@ -16,11 +17,13 @@ function RequireAll()
     require("player")
     Tick = require('Libs.tick.tick')
 
+    Flux = require('Libs.flux.flux')
     require('src.ultils.shaders')
     require('src.bullets.bullet')
     require('src.particles.particles')
     require('src.enemies.enemy')
     require 'update' 
+    require('src.ultils.ultils')
     
 
     -- Creat classes for different collision

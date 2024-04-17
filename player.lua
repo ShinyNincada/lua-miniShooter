@@ -113,9 +113,15 @@ function moveHandle()
     shootHandle()
 end
 
+function Player:GetPosition()
+    return self.x, self.y
+end
+
 function Player:load()
-    Player.collider = World:newCircleCollider(Player.x, Player.y, 8)
+    Player.collider = World:newBSGRectangleCollider(Player.x, Player.y, 16,16,3)
     Player.collider:setFixedRotation(true)
+    Player.collider:setCollisionClass('Player')
+
     
     love.mouse.setCursor(cursor)
     Player.spriteSheet = love.graphics.newImage('sprites/SpritesheetGuns.png')

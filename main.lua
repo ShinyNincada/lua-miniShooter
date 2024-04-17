@@ -35,8 +35,8 @@ function love.draw()
         Enemies:draw()
         Particles:draw()
 
+        MainCamera:detach()
         local debugTextX = 10  -- Adjust these values as needed
         local debugTextY = 10   -- Adjust these values as needed
-        love.graphics.print(love.timer.getFPS(), debugTextX, debugTextY)
-    MainCamera:detach()
+        love.graphics.print(Logtest, debugTextX, debugTextY)
  end
