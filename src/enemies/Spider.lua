@@ -23,7 +23,6 @@ function SpiderInit(x, y)
     -- Physics setup
     spiderSpawn.physics = World:newBSGRectangleCollider(x, y, 16,16,3)
     spiderSpawn.physics:setCollisionClass('Enemy')
-    spiderSpawn.physics:setFixedRotation(true)
     spiderSpawn.physics:setType("kinematic")
     spiderSpawn.physics.parent = spiderSpawn
 

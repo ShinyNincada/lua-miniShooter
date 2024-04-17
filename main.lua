@@ -6,6 +6,7 @@ function love.load()
     -- Collider
     Player:load()
     CreateEnemy(0, 0, 'SPIDER', nil)
+    Logtest = "NO"
 
     
     walls = {}

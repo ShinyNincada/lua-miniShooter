@@ -7,7 +7,7 @@ function CreateEnemy(startX, startY, type, args)
     local randX = math.random(1, 250)
     local randY = math.random(1, 250)
 
-    local spawned = EnemyType[type](Player.x + randX, Player.y +  randY)
+    local spawned = EnemyType[type](Player.x - 200, Player.y - 300 +  randY)
     
     -- Enemy states:
     -- 0: idle, standing
@@ -34,66 +34,42 @@ function CreateEnemy(startX, startY, type, args)
     end
 
     function spawned:lookForPlayer() 
-        Logtest = "NO"
         if self.physics == nil then 
             return false
         end
 
-        local ex = self.physics:getX()
-        local ey = self.physics:getY()
+        local ex, ey = self.physics:getPosition()
 
         -- The listening threshold 
-        if(distanceBetween(ex, ey, Player.collider:getX(), Player.collider:getY()) < 30) then
-            return true
-        end
+        -- if(distanceBetween(ex, ey, Player.collider:getX(), Player.collider:getY()) < 30) then
+        --     return true
+        -- end
 
         -- Only look at the player if they are in the direction enemy facing
-        if self.state >= 1 and self.state < 2 then
-            -- If idle or wandering 
-            if self.scaleX == 1 and ex > Player.collider:getX() then
-                return false
-            end
-            if self.scaleX == -1 and ex < Player.collider:getX() then
-                return false
-            end
-        end
-        local toPlayerVec = getPlayerToSelfVector(ex, ey):rotateInplace(math.pi)
-
+        -- if self.state >= 1 and self.state < 2 then
+        --     -- If idle or wandering 
+        --     if self.scaleX == 1 and ex > Player.collider:getX() then
+        --         return false
+        --     end
+        --     if self.scaleX == -1 and ex < Player.collider:getX() then
+        --         return false
+        --     end
+        -- end
+        
         -- line of queries going towards the player
-        for i=1,18 do
-            local qRad = 3
-            local qx = ex + toPlayerVec.x * i * qRad
-            local qy = ey + toPlayerVec.y * i * qRad
-
-            debug.lineX2 = qx
-            debug.lineY2 = qy
-
-            local hitPlayer = World:queryCircleArea(qx, qy, qRad, {'Player'})
-            if #hitPlayer > 0 then
-                return true
-            end
-
-            local obstacles = World:queryCircleArea(qx, qy, qRad, {'Wall'})
-            if #obstacles > 0 then
-                return false
-            end
-        end
-
-
-        -- local obstacles = World:queryLine(ex, ey, Player.x, Player.y, "Wall")
+        
+        -- local obstacles = World:queryLine(ex, ey, Player.x, Player.y, {'Wall'})
         -- if #obstacles > 0 then
-        --     Logtest = "Not Found"
+        --     Logtest = "YES"
         --     return false
         -- end
 
+        local hitPlayer = World:queryLine(ex, ey, Player.x, Player.y, {'Player'})
+        if #hitPlayer > 0 then
+            Logtest = "Found"
+            return true
+        end
 
-        -- local hitPlayer = World:queryLine(ex, ey, Player.x, Player.y, "Player")
-        -- if #hitPlayer > 0 then
-        --     Logtest = "Found"
-        --     return true
-        -- end
-        
-        
         return false
     end
 
@@ -257,21 +233,10 @@ end
 function Enemies:draw()
     for i = 1, #self  do
         if self[i].flashTimer > 0 then love.graphics.setShader(shaders.whiteout) end
-        love.graphics.setColor(0, 0, 1, 0.25)
-        love.graphics.circle('fill', self[i].physics:getX(), self[i].physics:getY(), 30)
-        local ex = self[i].physics:getX()
-        local ey = self[i].physics:getY()
-        local toPlayerVec = getPlayerToSelfVector(ex, ey):rotateInplace(math.pi)
-
-        for i=1,18 do
-            local qRad = 3
-            local qx = ex + toPlayerVec.x * i * qRad
-            local qy = ey + toPlayerVec.y * i * qRad
-
-
-           love.graphics.circle("fill", qx, qy, qRad)
-        end
         Enemies[i]:draw()
+        local ex, ey =self[i].physics:getPosition()
+        local playerX, playerY = Player.collider:getPosition()
+        love.graphics.line(ex, ey, playerX, playerY)
         love.graphics.setShader()
     end
 end
