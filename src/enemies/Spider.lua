@@ -15,7 +15,7 @@ function SpiderInit(x, y)
     spiderSpawn.animations = {}
     spiderSpawn.animations.idle = Anim8.newAnimation(spiderSpawn.grid('1-2', 1), 0.5)
     spiderSpawn.animations.walk = Anim8.newAnimation(spiderSpawn.grid('1-4', 2), 1)
-    spiderSpawn.animations.onHit = Anim8.newAnimation(spiderSpawn.grid('1-2', 3), 0.5)
+    spiderSpawn.animations.warn = Anim8.newAnimation(spiderSpawn.grid('1-2', 3), 0.5)
     spiderSpawn.animations.attack = Anim8.newAnimation(spiderSpawn.grid('1-5', 4), 1)
     spiderSpawn.animations.die = Anim8.newAnimation(spiderSpawn.grid('1-1', 5), 20)
     spiderSpawn.currentAnim = spiderSpawn.animations.idle
@@ -28,8 +28,6 @@ function SpiderInit(x, y)
 
     -- Ultils stats
     spiderSpawn.flashTimer = 0
-    spiderSpawn.floatMax = 1.5
-    spiderSpawn.floatTime = 0.9
     spiderSpawn.scaleX = 1
     
     return spiderSpawn
@@ -37,7 +35,6 @@ end
 
 function Spider:update(dt) 
     self.currentAnim:update(dt)
-    self:setScaleX()
 end
 
 function Spider:draw()
