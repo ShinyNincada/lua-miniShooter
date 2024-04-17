@@ -63,10 +63,10 @@ function CreateEnemy(startX, startY, type, args)
         --     Logtest = "YES"
         --     return false
         -- end
-
+        local toPlayerVector = getPlayerToSelfVector(ex, ey)
         local hitPlayer = World:queryLine(ex, ey, Player.x, Player.y, {'Player'})
         if #hitPlayer > 0 then
-            Logtest = "Found"
+            -- Logtest = "Found"
             return true
         end
 
@@ -74,6 +74,7 @@ function CreateEnemy(startX, startY, type, args)
     end
 
     function spawned:wanderUpdate(dt)
+        Logtest = tostring(self.state)
         if(self.state < 1 or self.state >= 2) then
             -- If not idle or wandering
             return
@@ -93,7 +94,7 @@ function CreateEnemy(startX, startY, type, args)
             self.wanderTimer = 0
 
             local ex = self.physics:getX()
-            local ex = self.physics:getY()
+            local ey = self.physics:getY()
 
             if(ex < self.x and ey < self.y) then
                 self.wanderDir = Vector(0, 1)
@@ -191,7 +192,8 @@ function CreateEnemy(startX, startY, type, args)
             self.flashTimer = self.flashTimer - dt
         end 
 
-        spawned:moveLogic(dt)
+        self:wanderUpdate(dt)
+        self:moveLogic(dt)
     end
 
     table.insert(Enemies, spawned)
