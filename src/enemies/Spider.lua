@@ -14,7 +14,7 @@ function SpiderInit(x, y)
     -- Animations setup
     spiderSpawn.animations = {}
     spiderSpawn.animations.idle = Anim8.newAnimation(spiderSpawn.grid('1-2', 1), 0.5)
-    spiderSpawn.animations.walk = Anim8.newAnimation(spiderSpawn.grid('1-4', 2), 1)
+    spiderSpawn.animations.walk = Anim8.newAnimation(spiderSpawn.grid('1-4', 2), 0.5)
     spiderSpawn.animations.warn = Anim8.newAnimation(spiderSpawn.grid('1-2', 3), 0.5)
     spiderSpawn.animations.attack = Anim8.newAnimation(spiderSpawn.grid('1-5', 4), 1)
     spiderSpawn.animations.die = Anim8.newAnimation(spiderSpawn.grid('1-1', 5), 20)
@@ -43,6 +43,9 @@ function Spider:draw()
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle("fill", ex - 25, ey - 24, 50 * (self.health / 100 ), 10)
     love.graphics.setColor(1, 1, 1)
+    if(self.state == 99) then
+        love.graphics.draw(CommonSprite.enemies.alert, ex, ey-14.5, nil, nil, nil, CommonSprite.enemies.alert:getWidth()/2, CommonSprite.enemies.alert:getHeight()/2)    
+    end
 end
 
 return SpiderInit

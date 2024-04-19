@@ -66,7 +66,7 @@ function CreateEnemy(startX, startY, type, args)
 
             local ex = self.physics:getX()
             local ey = self.physics:getY()
-
+            
             if(ex < self.x and ey < self.y) then
                 self.wanderDir = Vector(0, 1)
             elseif ex < self.x and ey > self.y then
@@ -86,16 +86,22 @@ function CreateEnemy(startX, startY, type, args)
             local vx = self.wanderDir.x * self.wanderSpeed
             local vy = self.wanderDir.y * self.wanderSpeed
 
-            -- self.physics:setLinearVelocity(vx, vy)
+            self.physics:setLinearVelocity(vx, vy)
 
             if(distanceBetween(self.physics:getX(), self.physics:getY(), self.x, self.y) > self.wanderRadius and self.wanderBufferTimer <= 0) then
                 -- If distance from enemy itself and the wander positioning > wanderRadius
                 -- Set back to idle then reset wanderTimer
                 self.state = 1
                 self.currentAnim = self.animations.idle
+                self.physics: setLinearVelocity(0, 0)
                 self.wanderTimer = 1 + math.random(0.1, 1)
             end
         end
+    end
+
+    function spawned:findPlayer()
+        -- Library setup
+        local mapData = GameMap.data()
     end
 
     function spawned:setScaleX()
@@ -172,7 +178,6 @@ function CreateEnemy(startX, startY, type, args)
 
     table.insert(Enemies, spawned)
 end
-
 
 
 function Enemies:destroyDead()

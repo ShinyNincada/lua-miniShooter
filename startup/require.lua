@@ -6,10 +6,10 @@ function RequireAll()
 
     -- Import Anim8
     Anim8 = require("Libs.anim8")
-    
+
     Sti = require 'Libs.sti'
     GameMap = Sti('sprites/mapTiles/cityTest.lua')
-    
+
     -- Create new World for physic
     wf = require 'Libs.windfield.init'
     World = wf.newWorld()
@@ -24,7 +24,7 @@ function RequireAll()
     require('src.enemies.enemy')
     require 'update' 
     require('src.ultils.ultils')
-    
+    require('startup.resources')
 
     -- Creat classes for different collision
     require 'startup.collisionClasses'   
