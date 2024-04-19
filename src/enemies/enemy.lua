@@ -101,8 +101,39 @@ function CreateEnemy(startX, startY, type, args)
 
     function spawned:findPlayer()
         -- Library setup
-        local mapData = GameMap.data()
+        local mapData = require('sprites.mapTiles.cityTest')
+        local converted2D = convertTo2D(mapData.layers[1].data, 50 , 50)
+        local grid = JumperGrid(converted2D)
+        local walkable = 1
+        local finder = Pathfinder(grid, 'JPS', walkable)
+        local startX, startY = math.floor(self.physics:getX() / 16) + 1, math.floor(self.physics:getY() / 16) + 1
+        local endX, endY = math.floor(Player.collider:getX() / 16) + 1, math.floor(Player.collider:getY() / 16) + 1
+
+        local path = finder:getPath(startX, startY, endX, endY)
+        -- if path then
+        --     print(('Path found! Length: %.2f'):format(path:getLength()))
+        --     for node, count in path:nodes() do
+        --     print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+        --     end
+        -- end
+
+        return path
     end
+
+    function spawned:drawPath(path)
+        if not path then return end -- If path is nil, do nothing
+    
+        love.graphics.setColor(0, 1, 0) -- Set color to green
+    
+        -- Iterate through each coordinate in the path
+        for i = 1, #path - 1 do
+            -- Draw a line segment between current and next coordinate
+            love.graphics.line((path[i].x - 1) * 16, (path[i].y - 1) * 16, (path[i + 1].x - 1) * 16, (path[i + 1].y - 1) * 16)
+        end
+
+        love.graphics.setColor(1, 1, 1) -- Set color to green
+    end
+    
 
     function spawned:setScaleX()
         local px, py = Player.collider:getPosition()
@@ -150,7 +181,7 @@ function CreateEnemy(startX, startY, type, args)
             -- If in attack state
             -- self.dir = vector(px - ex, py - ey):normalized() * self.magnitude
             self.currentAnim = self.animations.attack
-
+            
             if(self.chase) then
                 if self.grounded  then
                     local vx = self.wanderDir.x * self.wanderSpeed
@@ -219,5 +250,7 @@ function Enemies:draw()
         local playerX, playerY = Player.collider:getPosition()
         love.graphics.line(ex, ey, playerX, playerY)
         love.graphics.setShader()
+
+        self[i]:drawPath(self[i]:findPlayer())
     end
 end

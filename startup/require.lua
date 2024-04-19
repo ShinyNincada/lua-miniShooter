@@ -6,6 +6,10 @@ function RequireAll()
 
     -- Import Anim8
     Anim8 = require("Libs.anim8")
+    
+    -- Library setup
+    JumperGrid = require ("Libs.jumper.grid") -- The grid class
+    Pathfinder = require ("Libs.jumper.pathfinder") -- The pathfinder lass
 
     Sti = require 'Libs.sti'
     GameMap = Sti('sprites/mapTiles/cityTest.lua')

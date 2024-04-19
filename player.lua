@@ -118,7 +118,7 @@ function Player:GetPosition()
 end
 
 function Player:load()
-    Player.collider = World:newBSGRectangleCollider(Player.x, Player.y, 16,16,3)
+    Player.collider = World:newBSGRectangleCollider(Player.x, Player.y, 15,15,3)
     Player.collider:setFixedRotation(true)
     Player.collider:setCollisionClass('Player')
 
