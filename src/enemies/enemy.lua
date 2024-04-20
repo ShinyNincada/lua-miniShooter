@@ -23,9 +23,9 @@ function CreateEnemy(startX, startY, type, args)
     spawned.wanderBufferTimer = 0
     spawned.wanderDir = Vector(1,1)
     spawned.chase = false
+    spawned.chaseSpeed = 30
     spawned.grounded = true
 
-    
     function spawned:lookForPlayer() 
         if self.physics == nil then 
             return false
@@ -110,25 +110,47 @@ function CreateEnemy(startX, startY, type, args)
         local endX, endY = math.floor(Player.collider:getX() / 16) + 1, math.floor(Player.collider:getY() / 16) + 1
 
         local path = finder:getPath(startX, startY, endX, endY)
-        -- if path then
-        --     print(('Path found! Length: %.2f'):format(path:getLength()))
-        --     for node, count in path:nodes() do
-        --     print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
-        --     end
-        -- end
-
         return path
     end
 
-    function spawned:drawPath(path)
-        if not path then return end -- If path is nil, do nothing
+    function spawned:orderMove(path)
+        if path then
+            self.path = path -- the path to follow
+            self.isMoving = true -- whether or not the player should start moving
+            self.cur = 1 -- indexes the current reached step on the path to follow
+            self.there = true -- whether or not the player has reached a step
+        end
+
+        if(self.path) then
+            self:FollowPath()
+        end
+    end
+
+    function spawned:moveTowards(goalX, goalY, dt)
+        local ex, ey = self.physics:getPosition()
+        local dir = Vector.new(goalX - ex, goalY - ey)
+        dir = dir:normalized()
+        
+        local newVel = dir * self.chaseSpeed
+        self.physics:setLinearVelocity(newVel.x, newVel.y)
+
+     
+    end
+
+    function spawned:FollowPath()
+        if not self.path then return end
+        self:moveTowards((self.path[1].x) * 16 + 8, (self.path[1].y) * 16 + 8) -- Move bot towards the current point in the path
+    end
+
+    function spawned:drawPath()
+        if not self.path then return end -- If path is nil, do nothing
     
         love.graphics.setColor(0, 1, 0) -- Set color to green
     
         -- Iterate through each coordinate in the path
-        for i = 1, #path - 1 do
+        for i = 1, #self.path - 1 do
             -- Draw a line segment between current and next coordinate
-            love.graphics.line((path[i].x - 1) * 16, (path[i].y - 1) * 16, (path[i + 1].x - 1) * 16, (path[i + 1].y - 1) * 16)
+            love.graphics.line((self.path[i].x - 1) * 16 + 8, (self.path[i].y - 1) * 16 + 8, (self.path[i + 1].x - 1) * 16 + 8, (self.path[i + 1].y - 1) * 16 + 8)
         end
 
         love.graphics.setColor(1, 1, 1) -- Set color to green
@@ -168,6 +190,8 @@ function CreateEnemy(startX, startY, type, args)
     end
 
     function spawned:moveLogic(dt)
+        self:findPlayer()
+
         if self.state < 99 then
             -- If not in warning state
             if self:lookForPlayer() then
@@ -175,6 +199,10 @@ function CreateEnemy(startX, startY, type, args)
                 self.state = 99 -- alerted state
                 self.currentAnim = self.animations.warn
             end
+        end
+
+        if self.state == 99 then
+            self:orderMove(self:findPlayer())
         end
 
         if self.state >= 100 then
@@ -251,6 +279,6 @@ function Enemies:draw()
         love.graphics.line(ex, ey, playerX, playerY)
         love.graphics.setShader()
 
-        self[i]:drawPath(self[i]:findPlayer())
+        self[i]:drawPath()
     end
 end
