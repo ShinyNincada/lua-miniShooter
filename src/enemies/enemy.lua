@@ -1,8 +1,21 @@
+---@class EnemyTypeTable: A table containing mappings of enemy types to their corresponding constructors
 EnemyType = {
     SPIDER = require('src.enemies.Spider')
 }
+
+-- @class EnemiesTable: A table containing enemy objects
 Enemies = {}
 
+-- function TestClone() 
+--     print("test 1")
+--     Ltest = "minh 1"
+-- end
+
+--- Creates a new enemy object and adds it to the Enemies table
+---@param startX number: The starting X-coordinate of the enemy
+---@param startY number: The starting Y-coordinate of the enemy
+---@param type string: The type of enemy to create
+---@param args table: Additional arguments for creating the enemy
 function CreateEnemy(startX, startY, type, args)
     local randX = math.random(1, 250)
     local randY = math.random(1, 250)
@@ -44,7 +57,7 @@ function CreateEnemy(startX, startY, type, args)
     end
 
     function spawned:wanderUpdate(dt)
-        Logtest = tostring(self.state)
+        LogTest = tostring(self.state)
         if(self.state < 1 or self.state >= 2) then
             -- If not idle or wandering
             return
@@ -133,8 +146,6 @@ function CreateEnemy(startX, startY, type, args)
         
         local newVel = dir * self.chaseSpeed
         self.physics:setLinearVelocity(newVel.x, newVel.y)
-
-     
     end
 
     function spawned:FollowPath()
@@ -156,7 +167,6 @@ function CreateEnemy(startX, startY, type, args)
         love.graphics.setColor(1, 1, 1) -- Set color to green
     end
     
-
     function spawned:setScaleX()
         local px, py = Player.collider:getPosition()
         local ex, ey = self.physics:getPosition()
@@ -238,7 +248,7 @@ function CreateEnemy(startX, startY, type, args)
     table.insert(Enemies, spawned)
 end
 
-
+--- Destroys dead enemies from the Enemies table
 function Enemies:destroyDead()
     local i = #Enemies
     while i > 0 do
@@ -252,6 +262,8 @@ function Enemies:destroyDead()
     end
 end
 
+--- Updates all enemies in the Enemies table
+---@param dt number: The delta time
 function Enemies:update(dt)
     for i,e in ipairs(self) do
         e:update(dt)
@@ -270,6 +282,7 @@ function Enemies:update(dt)
   
 end
 
+--- Draws all enemies in the Enemies table
 function Enemies:draw()
     for i = 1, #self  do
         if self[i].flashTimer > 0 then love.graphics.setShader(shaders.whiteout) end

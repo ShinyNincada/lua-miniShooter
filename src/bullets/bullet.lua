@@ -4,7 +4,6 @@ local BulletTypes = {
     -- NONE = "none"
 }
 
-
 Bullets = {}
 
 local Bullet = require 'src.bullets.handgun_bullet'

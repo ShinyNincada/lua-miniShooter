@@ -6,7 +6,7 @@ function love.load()
     -- Collider
     Player:load()
     CreateEnemy(0, 0, 'SPIDER', nil)
-    Logtest = "NO"
+    LogTest = "NO"
 
     
     walls = {}
@@ -22,6 +22,11 @@ function love.load()
     end
 end
 
+-- function TestClone() 
+--     print("test 2")
+--     Ltest = "minh 2"
+-- end
+
 function love.update(dt)
     UpdateAll(dt)
     MainCamera:lookAt(Player.x, Player.y)
@@ -35,9 +40,9 @@ function love.draw()
         Bullets:draw()
         Enemies:draw()
         Particles:draw()
-
-        MainCamera:detach()
-        local debugTextX = 10  -- Adjust these values as needed
-        local debugTextY = 10   -- Adjust these values as needed
-        love.graphics.print(Logtest, debugTextX, debugTextY)
+    MainCamera:detach()
+    -- TestClone()
+    local debugTextX = 10  -- Adjust these values as needed
+    local debugTextY = 10   -- Adjust these values as needed
+    love.graphics.print(LogTest, debugTextX, debugTextY)
  end
